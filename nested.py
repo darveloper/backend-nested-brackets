@@ -12,44 +12,39 @@ closing = [")", "}", "]", ">", "*)"]
 
 
 def is_nested(line):
-    i = 0
-    err = 0
     stack = []
-    stack2 = []
-    while i < len(line):
-        if line[i] in opening:
-            stack.append(line[i])
-        elif line[i] in closing:
-            pos = closing.index(line[i])
-            if ((len(stack) > 0) and (opening[pos] == stack[len(stack)-1])):
-                stack.pop()
-            else:
-                with open('output.txt', 'a') as file:
-                    file.writelines(" NO:" + str(err))
-                    
+    unbalanced = False
+    pos = 0
+    while line:
+        paren = line[0]
+        if line[:2] == "(*" or line[:2] == "*)":
+            paren = line[:2]
+        pos += 1
+        if paren in closing:
+            index = closing.index(paren)
+            match = opening[index]
+            if stack.pop() != match:
+                unbalanced = True
                 break
-        i += 1
-        err += 1
-    if len(stack) == 0:
-        with open('output.txt', 'a') as file:
-            file.writelines(" YES ")
-            
-    else:
-        with open('output.txt', 'a') as file:
-            file.writelines(" NO:" + str(err))
+        if paren in opening:
+            stack.append(paren)
 
+        line = line[len(paren):]
+    if stack or unbalanced:
+        return 'No ' + str(pos)
+    return 'Yes'
 
 
 
 def main(args):
     """Open the input file and call `is_nested()` for each line"""
     # Results: print to console and also write to output file
-    with open('input.txt') as file:
-        data = file.read()
-        lines = data.split()
-        
-        for line in lines:
-            is_nested(line)
+    with open('input.txt', 'r') as file:
+        with open('output.txt', 'w') as nfile:
+            for line in file:
+                read_output = is_nested(line)
+                print(read_output)
+                nfile.write(read_output + '\n')
     
 
 

@@ -1,2 +1,4 @@
-    if len(stack) == 0: 
-            print("True")
+s = {'foo', 'bar', 'baz', 'qux'}
+
+s.difference_update({'bar'})
+print(s)
